@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.handson.basic.model.*;
 import com.handson.basic.repo.StudentService;
+import com.handson.basic.util.AWSService;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.Min;
@@ -74,6 +76,21 @@ public class StudentsController {
     @Autowired
     ObjectMapper om;
 
+    @Autowired
+    AWSService awsService;
+
+    @RequestMapping(value = "/{id}/image", method = RequestMethod.PUT)
+    public ResponseEntity<?> uploadStudentImage(@PathVariable Long id,  @RequestParam("image") MultipartFile image)
+    {
+        Optional<Student> dbStudent = studentService.findById(id);
+        if (dbStudent.isEmpty()) throw new RuntimeException("Student with id: " + id + " not found");
+        String bucketPath = "apps/oriya/student-" +  id + ".png" ;
+        awsService.putInBucket(image, bucketPath);
+        dbStudent.get().setProfilePicture(bucketPath);
+        Student updatedStudent = studentService.save(dbStudent.get());
+        return new ResponseEntity<>(StudentOut.of(updatedStudent, awsService) , HttpStatus.OK);
+    }
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<PaginationAndList> search(@RequestParam(required = false) String fullName,
                                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fromBirthDate,
@@ -83,7 +100,8 @@ public class StudentsController {
                                                     @RequestParam(required = false) Integer fromAvgScore,
                                                     @RequestParam(defaultValue = "1") Integer page,
                                                     @RequestParam(defaultValue = "50") @Min(1) Integer count,
-                                                    @RequestParam(defaultValue = "id") StudentSortField sort, @RequestParam(defaultValue = "asc") SortDirection sortDirection) throws JsonProcessingException {
+                                                    @RequestParam(defaultValue = "id") StudentSortField sort,
+                                                    @RequestParam(defaultValue = "asc") SortDirection sortDirection) throws JsonProcessingException {
 
         var res =aFPS().select(List.of(
                         aFPSField().field("s.id").alias("id").build(),
@@ -107,6 +125,13 @@ public class StudentsController {
                 )).sortField(sort.fieldName).sortDirection(sortDirection).page(page).count(count)
                 .itemClass(StudentOut.class)
                 .build().exec(em, om);
+
+        // Generate the profile picture link for each student in the result
+        List<StudentOut> studentOutList = res.getData();//getList();
+        for (StudentOut studentOut : studentOutList) {
+            String profilePictureLink = awsService.generateLink(studentOut.getProfilePicture());
+            studentOut.setProfilepicture(profilePictureLink);
+        }
         return ResponseEntity.ok(res);
     }
 
