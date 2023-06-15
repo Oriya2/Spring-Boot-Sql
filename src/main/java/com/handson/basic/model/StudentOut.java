@@ -121,9 +121,6 @@ public class StudentOut {
         this.phone = phone;
     }
 
-    @Autowired
-    AWSService awsService;
-
     public void setProfilepicture(String profilepicture) {
         this.profilepicture = profilepicture;
     }
