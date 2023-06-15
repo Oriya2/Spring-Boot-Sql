@@ -6,11 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.handson.basic.util.AWSService;
 import com.handson.basic.util.Dates;
 import org.joda.time.LocalDateTime;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.SqlResultSetMapping;
 import java.util.Date;
+
 
 @Entity
 @SqlResultSetMapping(name = "StudentOut")
@@ -118,6 +120,9 @@ public class StudentOut {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    @Autowired
+    AWSService awsService;
 
     public void setProfilepicture(String profilepicture) {
         this.profilepicture = profilepicture;

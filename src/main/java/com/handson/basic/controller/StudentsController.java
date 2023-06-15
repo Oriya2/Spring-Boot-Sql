@@ -126,7 +126,7 @@ public class StudentsController {
                 .itemClass(StudentOut.class)
                 .build().exec(em, om);
 
-        // Generate the profile picture link for each student in the result
+//         Generate the profile picture link for each student in the result
         List<StudentOut> studentOutList = res.getData();//getList();
         for (StudentOut studentOut : studentOutList) {
             String profilePictureLink = awsService.generateLink(studentOut.getProfilePicture());
