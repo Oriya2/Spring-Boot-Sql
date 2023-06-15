@@ -1,9 +1,5 @@
 package com.handson.basic.model;
 
-//public class StudentIn implements Serializable {
-//
-//}
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.handson.basic.util.Dates;
 import org.hibernate.validator.constraints.Length;

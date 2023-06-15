@@ -22,9 +22,6 @@ public class Student implements Serializable {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-
-
-
     @NotNull
     @Column(nullable = false, updatable = false)
     private Date createdAt = Dates.nowUTC();
