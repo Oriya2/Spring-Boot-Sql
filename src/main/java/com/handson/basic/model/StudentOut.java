@@ -42,6 +42,9 @@ public class StudentOut {
     private String phone;
     private String profilepicture;
 
+    private Double avgscore;
+
+
     public Integer getSatScore() {
         return satscore;
     }
@@ -62,7 +65,6 @@ public class StudentOut {
         return birthdate;
     }
 
-
     public Long getId() {
         return id;
     }
@@ -77,5 +79,41 @@ public class StudentOut {
 
     public String getProfilePicture() {
         return profilepicture;
+    }
+
+    public void setCreatedat(Date createdat) {
+        this.createdat = createdat;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public void setSatscore(Integer satscore) {
+        this.satscore = satscore;
+    }
+
+    public void setGraduationscore(Double graduationscore) {
+        this.graduationscore = graduationscore;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setProfilepicture(String profilepicture) {
+        this.profilepicture = profilepicture;
+    }
+
+    public Double getAvgscore() {
+        return avgscore;
+    }
+
+    public void setAvgscore(Double avgscore) {
+        this.avgscore = avgscore;
     }
 }
